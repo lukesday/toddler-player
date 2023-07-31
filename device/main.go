@@ -89,7 +89,6 @@ func main() {
 			return
 		case data := <-cb:
 			log.Println("UID:", hex.EncodeToString(data))
-			return
 		case <-keySignal:
 			log.Println("SIGINT detected, closing toddler-player")
 			return
