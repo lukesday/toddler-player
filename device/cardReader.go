@@ -54,28 +54,26 @@ func (r *reader) read() {
 		close(r.c)
 	}()
 
-	go func() {
-		log.Printf("Started %s", rfid.String())
+	log.Printf("Started %s", rfid.String())
 
-		for {
-			// Trying to read card UID.
+	for {
+		// Trying to read card UID.
 
-			select {
-			case <-loopTimer.C:
-				uid, err := rfid.ReadUID(10 * time.Second)
+		select {
+		case <-loopTimer.C:
+			uid, err := rfid.ReadUID(10 * time.Second)
 
-				// Some devices tend to send wrong data while RFID chip is already detected
-				// but still "too far" from a receiver.
-				// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
-				// This will suppress such errors.
-				if err != nil {
-					continue
-				}
-
-				loopTimer = time.NewTimer(time.Second * 1)
-
-				r.c <- uid
+			// Some devices tend to send wrong data while RFID chip is already detected
+			// but still "too far" from a receiver.
+			// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
+			// This will suppress such errors.
+			if err != nil {
+				continue
 			}
+
+			loopTimer = time.NewTimer(time.Second * 1)
+
+			r.c <- uid
 		}
-	}()
+	}
 }
