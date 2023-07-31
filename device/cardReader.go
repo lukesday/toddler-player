@@ -1,10 +1,7 @@
 package main
 
 import (
-	"encoding/hex"
 	"log"
-	"os"
-	"os/signal"
 	"time"
 
 	"periph.io/x/conn/v3/spi/spireg"
@@ -13,8 +10,19 @@ import (
 	"periph.io/x/host/v3/rpi"
 )
 
-func Read() {
-	log.Printf("Loading Read")
+type reader struct {
+	c chan []byte
+}
+
+func newReader() *reader {
+	thisReader := reader{
+		c: make(chan []byte),
+	}
+	return &thisReader
+}
+
+func (r reader) read() {
+	log.Printf("Loading read")
 
 	// Make sure periph is initialized.
 	if _, err := host.Init(); err != nil {
@@ -39,15 +47,11 @@ func Read() {
 	// Setting the antenna signal strength.
 	rfid.SetAntennaGain(5)
 
-	cb := make(chan []byte)
 	loopTimer := time.NewTimer(0)
-
-	keySignal := make(chan os.Signal, 1)
-	signal.Notify(keySignal, os.Interrupt)
 
 	// Stopping timer, flagging reader thread as timed out
 	defer func() {
-		close(cb)
+		close(r.c)
 	}()
 
 	go func() {
@@ -70,18 +74,8 @@ func Read() {
 
 				loopTimer = time.NewTimer(time.Second * 1)
 
-				cb <- uid
+				r.c <- uid
 			}
 		}
 	}()
-
-	for {
-		select {
-		case data := <-cb:
-			log.Println("UID:", hex.EncodeToString(data))
-		case <-keySignal:
-			log.Println("SIGINT detected, closing toddler-player")
-			return
-		}
-	}
 }
