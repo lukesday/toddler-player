@@ -7,6 +7,8 @@ package main
 import (
 	"encoding/hex"
 	"log"
+	"os"
+	"os/signal"
 	"time"
 
 	"periph.io/x/conn/v3/spi/spireg"
@@ -43,7 +45,10 @@ func main() {
 
 	timedOut := false
 	cb := make(chan []byte)
-	timer := time.NewTimer(10 * time.Second)
+	timer := time.NewTimer(10 * time.Minute)
+
+	keySignal := make(chan os.Signal, 1)
+	signal.Notify(keySignal, os.Interrupt)
 
 	// Stopping timer, flagging reader thread as timed out
 	defer func() {
@@ -85,6 +90,8 @@ func main() {
 		case data := <-cb:
 			log.Println("UID:", hex.EncodeToString(data))
 			return
+		case <-keySignal:
+			log.Println("SIGINT detected, closing toddler-player")
 		}
 	}
 }
