@@ -78,7 +78,6 @@ func main() {
 			}
 
 			cb <- uid
-			return
 		}
 	}()
 
