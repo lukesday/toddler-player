@@ -14,11 +14,11 @@ type reader struct {
 	c chan []byte
 }
 
-func newReader() *reader {
+func newReader() reader {
 	thisReader := reader{
 		c: make(chan []byte),
 	}
-	return &thisReader
+	return thisReader
 }
 
 func (r reader) read() {
