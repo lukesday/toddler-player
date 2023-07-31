@@ -11,10 +11,12 @@ func main() {
 
 	cardReader := newReader()
 
-	cardReader.read()
-
 	keySignal := make(chan os.Signal, 1)
 	signal.Notify(keySignal, os.Interrupt)
+
+	go func() {
+		cardReader.read()
+	}()
 
 	for {
 		select {
