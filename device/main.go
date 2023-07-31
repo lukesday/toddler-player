@@ -60,24 +60,32 @@ func main() {
 	go func() {
 		log.Printf("Started %s", rfid.String())
 
+		loopTimer := time.NewTimer(0)
+
 		for {
 			// Trying to read card UID.
-			uid, err := rfid.ReadUID(10 * time.Second)
 
-			// If main thread timed out just exiting.
-			if timedOut {
-				return
+			select {
+			case <-loopTimer.C:
+				uid, err := rfid.ReadUID(10 * time.Second)
+
+				// If main thread timed out just exiting.
+				if timedOut {
+					return
+				}
+
+				// Some devices tend to send wrong data while RFID chip is already detected
+				// but still "too far" from a receiver.
+				// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
+				// This will suppress such errors.
+				if err != nil {
+					continue
+				}
+
+				loopTimer = time.NewTimer(time.Second * 1)
+
+				cb <- uid
 			}
-
-			// Some devices tend to send wrong data while RFID chip is already detected
-			// but still "too far" from a receiver.
-			// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
-			// This will suppress such errors.
-			if err != nil {
-				continue
-			}
-
-			cb <- uid
 		}
 	}()
 
