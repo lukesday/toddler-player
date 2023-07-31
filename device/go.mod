@@ -1,4 +1,4 @@
-module example.com/toddler-player
+module toddler-player
 
 go 1.20
 
