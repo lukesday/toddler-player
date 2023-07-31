@@ -92,6 +92,7 @@ func main() {
 			return
 		case <-keySignal:
 			log.Println("SIGINT detected, closing toddler-player")
+			return
 		}
 	}
 }
