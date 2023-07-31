@@ -16,10 +16,8 @@ import (
 )
 
 func main() {
-	ExampleDev_ReadUID()
-}
+	log.Fatal("test")
 
-func ExampleDev_ReadUID() {
 	// Make sure periph is initialized.
 	if _, err := host.Init(); err != nil {
 		log.Fatal(err)
