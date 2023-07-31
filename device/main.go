@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	log.Fatal("test")
+	log.Printf("test")
 
 	// Make sure periph is initialized.
 	if _, err := host.Init(); err != nil {
