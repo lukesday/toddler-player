@@ -61,6 +61,7 @@ func (r *Reader) Read() {
 
 		select {
 		case <-loopTimer.C:
+			log.Printf("Read ready")
 			uid, err := rfid.ReadUID(10 * time.Second)
 
 			// Some devices tend to send wrong data while RFID chip is already detected
@@ -68,6 +69,7 @@ func (r *Reader) Read() {
 			// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
 			// This will suppress such errors.
 			if err != nil {
+				log.Printf("err: %s", err)
 				continue
 			}
 
