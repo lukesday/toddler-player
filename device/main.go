@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"toddler-player/reader"
+	"toddler-player/device/reader"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module toddler-player
+module toddler-player/device
 
 go 1.20
 
