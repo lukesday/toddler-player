@@ -58,10 +58,8 @@ func (r *Reader) Read() {
 
 	for {
 		// Trying to read card UID.
-
 		select {
 		case <-loopTimer.C:
-			log.Printf("Read ready")
 			uid, err := rfid.ReadUID(10 * time.Second)
 
 			loopTimer = time.NewTimer(time.Second * 1)
@@ -71,7 +69,6 @@ func (r *Reader) Read() {
 			// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
 			// This will suppress such errors.
 			if err != nil {
-				log.Printf("err: %s", err)
 				continue
 			}
 
