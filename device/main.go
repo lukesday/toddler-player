@@ -5,23 +5,25 @@ import (
 	"log"
 	"os"
 	"os/signal"
+
+	"toddler-player/reader"
 )
 
 func main() {
 
-	cardReader := newReader()
+	cardReader := reader.NewReader()
 
 	keySignal := make(chan os.Signal, 1)
 	signal.Notify(keySignal, os.Interrupt)
 
 	go func() {
-		cardReader.read()
+		cardReader.Read()
 	}()
 
 	go func() {
 		for {
 			select {
-			case data := <-cardReader.c:
+			case data := <-cardReader.C:
 				log.Println("UID:", hex.EncodeToString(data))
 				// Send HTTP request to server with UID
 			case <-keySignal:

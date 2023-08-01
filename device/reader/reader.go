@@ -1,4 +1,4 @@
-package main
+package reader
 
 import (
 	"log"
@@ -10,18 +10,18 @@ import (
 	"periph.io/x/host/v3/rpi"
 )
 
-type reader struct {
-	c chan []byte
+type Reader struct {
+	C chan []byte
 }
 
-func newReader() reader {
-	thisReader := reader{
-		c: make(chan []byte),
+func NewReader() Reader {
+	thisReader := Reader{
+		C: make(chan []byte),
 	}
 	return thisReader
 }
 
-func (r *reader) read() {
+func (r *Reader) Read() {
 	log.Printf("Loading read")
 
 	// Make sure periph is initialized.
@@ -51,7 +51,7 @@ func (r *reader) read() {
 
 	// Stopping timer, flagging reader thread as timed out
 	defer func() {
-		close(r.c)
+		close(r.C)
 	}()
 
 	log.Printf("Started %s", rfid.String())
@@ -73,7 +73,7 @@ func (r *reader) read() {
 
 			loopTimer = time.NewTimer(time.Second * 1)
 
-			r.c <- uid
+			r.C <- uid
 		}
 	}
 }
