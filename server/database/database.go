@@ -5,11 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type NfcTag struct {
-	gorm.Model
-	NfcUID string `gorm:"unique; not null"`
-}
-
 type DatabaseConnection struct {
 	DB *gorm.DB
 }
@@ -21,13 +16,7 @@ func InitialiseDatabase() DatabaseConnection {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&NfcTag{})
+	db.AutoMigrate(&NfcTag{}, &Status{})
 
 	return DatabaseConnection{DB: db}
-}
-
-func (d *DatabaseConnection) Enroll(UID string) {
-	d.DB.Create(&NfcTag{
-		NfcUID: UID,
-	})
 }
