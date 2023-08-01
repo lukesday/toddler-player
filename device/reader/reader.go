@@ -64,6 +64,8 @@ func (r *Reader) Read() {
 			log.Printf("Read ready")
 			uid, err := rfid.ReadUID(10 * time.Second)
 
+			loopTimer = time.NewTimer(time.Second * 1)
+
 			// Some devices tend to send wrong data while RFID chip is already detected
 			// but still "too far" from a receiver.
 			// Especially some cheap CN clones which you can find on GearBest, AliExpress, etc.
@@ -72,8 +74,6 @@ func (r *Reader) Read() {
 				log.Printf("err: %s", err)
 				continue
 			}
-
-			loopTimer = time.NewTimer(time.Second * 1)
 
 			r.C <- uid
 		}
