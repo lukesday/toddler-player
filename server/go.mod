@@ -3,9 +3,10 @@ module toddler-player/server
 go 1.20
 
 require (
-	gorm.io/gorm v1.25.2
-	gorm.io/driver/sqlite v1.5.2
 	github.com/gofiber/fiber/v2 v2.48.0
+	gorm.io/driver/sqlite v1.5.2
+	gorm.io/gorm v1.25.2
+	github.com/joho/godotenv v1.5.1
 )
 
 require (
