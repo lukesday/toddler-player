@@ -33,12 +33,22 @@ func InitialiseRouter(conn *database.DatabaseConnection) {
 	}()
 
 	go func() {
-		app.Put("/api/sethealth", func(c *fiber.Ctx) error {
+
+		app.All("/api/*", func(c *fiber.Ctx) error {
+			conn.LogRequest(c.Request().URI().String(), string(c.Request().Header.Method()))
+			return c.Next()
+		})
+
+		app.Get("/api/logs", func(c *fiber.Ctx) error {
+			return c.JSON(conn.GetLogs())
+		})
+
+		app.Put("/api/device/sethealth", func(c *fiber.Ctx) error {
 			healthyChan <- true
 			return c.SendStatus(200)
 		})
 
-		app.Get("/api/healthcheck", func(c *fiber.Ctx) error {
+		app.Get("/api/device/healthcheck", func(c *fiber.Ctx) error {
 			healthStatus, err := conn.CheckStatus("health")
 			if err == nil && healthStatus == "online" {
 				return c.JSON(fiber.Map{"status": "online"})
