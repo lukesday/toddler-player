@@ -13,8 +13,7 @@ func (d *DatabaseConnection) Enroll(UID string) {
 	})
 }
 
-func (d *DatabaseConnection) Exists(UID string) bool {
-	matchingTags := []NfcTag{}
-	d.DB.Where("nfc_uid = ?", UID).Find(&matchingTags)
-	return len(matchingTags) > 0
+func (d *DatabaseConnection) GetTag(UID string, out NfcTag) error {
+	err := d.DB.Where("nfc_uid = ?", UID).First(&out).Error
+	return err
 }

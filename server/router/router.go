@@ -1,9 +1,12 @@
 package router
 
 import (
+	"errors"
+	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 
 	"toddler-player/server/database"
 )
@@ -56,13 +59,53 @@ func InitialiseRouter(conn *database.DatabaseConnection) {
 			return c.JSON(fiber.Map{"status": "offline"})
 		})
 
-		app.Post("/api/enroll/:uid", func(c *fiber.Ctx) error {
-			if conn.Exists(c.Params("uid")) {
-				return c.SendStatus(409)
+		app.Post("/api/nfc/:uid", func(c *fiber.Ctx) error {
+			nfcTag := database.NfcTag{}
+			if tagErr := conn.GetTag(c.Params("uid"), nfcTag); tagErr == nil {
+				automation := database.Automation{}
+
+				if err := conn.GetAutomation(nfcTag, automation); err != nil {
+					log.Println(err)
+				} else {
+					// Trigger automation
+					log.Println(automation)
+				}
+			} else if tagErr == gorm.ErrRecordNotFound {
+				conn.Enroll(c.Params("uid"))
 			}
 
-			conn.Enroll(c.Params("uid"))
 			return c.SendStatus(200)
+		})
+
+		app.Post("/api/automation", func(c *fiber.Ctx) error {
+			payload := struct {
+				NfcTag   string `json:"nfcTag"`
+				DeviceId string `json:"deviceId"`
+				MediaId  string `json:"mediaId"`
+			}{}
+
+			if err := c.BodyParser(&payload); err != nil {
+				log.Println("error = ", err)
+				return err
+			}
+
+			nfcTag := database.NfcTag{}
+
+			if err := conn.GetTag(payload.NfcTag, nfcTag); err != nil {
+				log.Println("error = ", err)
+				return err
+			}
+
+			automation := database.Automation{}
+
+			if err := conn.GetAutomation(nfcTag, automation); err == nil {
+				return c.SendStatus(409)
+			} else if errors.Is(err, gorm.ErrRecordNotFound) {
+				conn.CreateAutomation(nfcTag, payload.DeviceId, payload.MediaId)
+				return c.SendStatus(200)
+			}
+
+			return c.SendStatus(400)
 		})
 
 		app.Listen(":3000")
