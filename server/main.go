@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"time"
 
 	"toddler-player/server/database"
@@ -11,10 +10,10 @@ import (
 )
 
 func main() {
-	env := os.Getenv("ENV")
-	if env == "dev" {
-		godotenv.Load()
-	}
+	//env := os.Getenv("ENV")
+	//if env == "dev" {
+	godotenv.Load()
+	//}
 
 	conn := database.InitialiseDatabase()
 	router.InitialiseRouter(&conn)

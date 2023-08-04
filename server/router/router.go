@@ -27,6 +27,7 @@ func InitialiseRouter(conn *database.DatabaseConnection) {
 	router.UseDevice()
 	router.UseNfc()
 	router.UseAutomation()
+	router.UseSpotify()
 
 	go router.App.Listen(":3000")
 }
