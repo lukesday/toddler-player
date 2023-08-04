@@ -17,13 +17,14 @@ func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, deviceId, mediaId s
 	})
 }
 
-func (d *DatabaseConnection) GetAutomation(nfcTag NfcTag, out Automation) error {
-	err := d.DB.Model(&Automation{}).Preload("NfcTag").Where("nfc_tag = ?", nfcTag).First(&out).Error
-	return err
+func (d *DatabaseConnection) GetAutomation(id uint, out Automation) error {
+	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("id = ?", id).First(&out).Error
 }
 
-func (d *DatabaseConnection) ListAutomations(nfcTag NfcTag) ([]Automation, error) {
-	var automations []Automation
-	err := d.DB.Model(&Automation{}).Preload("NfcTag").Find(&automations).Error
-	return automations, err
+func (d *DatabaseConnection) GetAutomationByNfcTag(nfcTag NfcTag, out Automation) error {
+	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("nfc_tag = ?", nfcTag).First(&out).Error
+}
+
+func (d *DatabaseConnection) ListAutomations(out []Automation) error {
+	return d.DB.Model(&Automation{}).Preload("NfcTag").Find(&out).Error
 }
