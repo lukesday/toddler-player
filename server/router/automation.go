@@ -10,13 +10,15 @@ import (
 	"toddler-player/server/database"
 )
 
+type AutomationPayload struct {
+	NfcTag   string `json:"nfcTag"`
+	DeviceId string `json:"deviceId"`
+	MediaId  string `json:"mediaId"`
+}
+
 func (r *Router) UseAutomation() {
 	r.App.Post("/api/automation", func(c *fiber.Ctx) error {
-		payload := struct {
-			NfcTag   string `json:"nfcTag"`
-			DeviceId string `json:"deviceId"`
-			MediaId  string `json:"mediaId"`
-		}{}
+		payload := AutomationPayload{}
 
 		if err := c.BodyParser(&payload); err != nil {
 			log.Println("error = ", err)
