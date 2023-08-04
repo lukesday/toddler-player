@@ -15,7 +15,7 @@ func (r *Router) UseNfc() {
 		if tagErr := r.Conn.GetTag(c.Params("uid"), nfcTag); tagErr == nil {
 			automation := database.Automation{}
 
-			if err := r.Conn.GetAutomation(nfcTag, automation); err != nil {
+			if err := r.Conn.GetAutomationByNfcTag(nfcTag, automation); err != nil {
 				log.Println(err)
 			} else {
 				// Trigger automation
