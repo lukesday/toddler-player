@@ -27,6 +27,7 @@ export async function load({ url, cookies }) {
       grant_type: 'authorization_code'
     }
 
+    // This should be moved to the Server!
     const response = await fetch('https://accounts.spotify.com/api/token', 
     {
       method: "POST",
