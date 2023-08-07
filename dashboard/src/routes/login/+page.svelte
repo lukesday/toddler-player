@@ -1,0 +1,1 @@
+<p>Redirecting to spotify login...</p>
