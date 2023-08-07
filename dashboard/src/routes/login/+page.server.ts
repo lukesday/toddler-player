@@ -6,9 +6,7 @@ var client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
 var client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
 var redirect_uri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
 
-console.log(import.meta.env)
-
-console.log(client_id, client_secret, redirect_uri)
+var stateKey = 'spotify_auth_state';
 
 var generateRandomString = function(length : number) {
   var text = '';
@@ -20,9 +18,11 @@ var generateRandomString = function(length : number) {
   return text;
 };
 
-export function load() {
+export function load({ cookies }) {
 
     var state = generateRandomString(16);
+    cookies.set(stateKey, state);
+
     var scope = 'user-read-private user-read-email';
 
     throw redirect (307, 'https://accounts.spotify.com/authorize?' +
