@@ -52,6 +52,14 @@ type SpotifyAuthPayload struct {
 	Redirect string `json:"redirect"`
 }
 
+func getAuthData(session *session.Session) (SpotifyAuthResponse, error) {
+	sessionAuth := session.Get("authData")
+	if sessionAuth == nil {
+		return SpotifyAuthResponse{}, errors.New("No session data")
+	}
+	return sessionAuth.(SpotifyAuthResponse), nil
+}
+
 func (r *Router) UseSpotify() {
 	// Move to mySQL store so this can be distributred and not in memory
 	store := session.New()
@@ -60,7 +68,10 @@ func (r *Router) UseSpotify() {
 
 		sess, _ := store.Get(c)
 
-		authData := sess.Get("authData").(SpotifyAuthResponse)
+		authData, err := getAuthData(sess)
+		if err != nil {
+			return c.SendStatus(401)
+		}
 
 		if devices, err := getDevices(authData, sess); err == nil {
 			return c.JSON(devices)
@@ -74,14 +85,14 @@ func (r *Router) UseSpotify() {
 
 		sess, _ := store.Get(c)
 
-		authData := sess.Get("authData").(SpotifyAuthResponse)
-
-		if authData.AccessToken == "" {
+		authData, err := getAuthData(sess)
+		if err != nil {
 			return c.SendStatus(401)
 		}
 
 		if userData, err := getUserData(authData, sess); err != nil {
-			return err
+			log.Print(err)
+			return c.SendStatus(500)
 		} else {
 			return c.JSON(userData)
 		}
