@@ -70,6 +70,23 @@ func (r *Router) UseSpotify() {
 		return c.SendStatus(401)
 	})
 
+	r.App.Get("/api/spotify/me", func(c *fiber.Ctx) error {
+
+		sess, _ := store.Get(c)
+
+		authData := sess.Get("authData").(SpotifyAuthResponse)
+
+		if authData.AccessToken == "" {
+			return c.SendStatus(401)
+		}
+
+		if userData, err := getUserData(authData.AccessToken); err != nil {
+			return err
+		} else {
+			return c.JSON(userData)
+		}
+	})
+
 	r.App.Post("/api/spotify/auth", func(c *fiber.Ctx) error {
 		payload := SpotifyAuthPayload{}
 
