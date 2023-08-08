@@ -62,7 +62,7 @@ func (r *Router) UseSpotify() {
 
 		authData := sess.Get("authData").(SpotifyAuthResponse)
 
-		if devices, err := getDevices(authData.AccessToken); err == nil {
+		if devices, err := getDevices(authData, sess); err == nil {
 			return c.JSON(devices)
 		}
 
