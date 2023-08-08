@@ -23,6 +23,7 @@ type SpotifyAuthResponse struct {
 }
 
 type SpotifyDevice struct {
+	*SessionDetails
 	Id               string
 	IsActive         bool `json:"is_active"`
 	IsPrivateSession bool `json:"is_private_session"`
@@ -33,6 +34,7 @@ type SpotifyDevice struct {
 }
 
 type SpotifyUserData struct {
+	*SessionDetails
 	Country     string `json:"country"`
 	DisplayName string `json:"display_name"`
 	Email       string `json:"email"`
@@ -41,6 +43,10 @@ type SpotifyUserData struct {
 	Product     string `json:"product"`
 	Type        string `json:"type"`
 	URI         string `json:"uri"`
+}
+
+type SessionDetails struct {
+	SessionId string `json:"session_id"`
 }
 
 type SpotifyDeviceList struct {
@@ -61,7 +67,7 @@ func getAuthData(session *session.Session) (SpotifyAuthResponse, error) {
 }
 
 func (r *Router) UseSpotify() {
-	// Move to mySQL store so this can be distributred and not in memory
+	// Remove session store and create a mysql table with the id against auth data
 	store := session.New()
 
 	r.App.Get("/api/spotify/devices", func(c *fiber.Ctx) error {
@@ -117,10 +123,12 @@ func (r *Router) UseSpotify() {
 		sess, _ := store.Get(c)
 
 		sess.Set("authData", authData)
+		sess.Save()
 
 		if userData, err := getUserData(authData, sess); err != nil {
 			return err
 		} else {
+			userData.SessionId = sess.ID()
 			return c.JSON(userData)
 		}
 	})
@@ -168,6 +176,7 @@ func getUserData(authData SpotifyAuthResponse, session *session.Session) (Spotif
 	body, err, authData := spotifyGetRequestWithRetry(authData, resource)
 	if authData.AccessToken != "" {
 		session.Set("authData", authData)
+		session.Save()
 	}
 
 	json.Unmarshal(body, &responseData)
@@ -183,6 +192,7 @@ func getDevices(authData SpotifyAuthResponse, session *session.Session) (Spotify
 	body, err, authData := spotifyGetRequestWithRetry(authData, resource)
 	if authData.AccessToken != "" {
 		session.Set("authData", authData)
+		session.Save()
 	}
 
 	json.Unmarshal(body, &responseData)

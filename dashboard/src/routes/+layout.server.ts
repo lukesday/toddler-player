@@ -3,12 +3,25 @@ import * as querystring from 'querystring'
 
 const localServerUri = import.meta.env.VITE_SERVER_URI
 
-export async function load() {
+export async function load({ cookies }) {
+
+    const sessionId = cookies.get("session_id")
+
+    if (!sessionId) {
+      return {
+          loggedIn: false,
+          userData: null,
+      }
+    }
+
     const response = await fetch(`${localServerUri}/api/spotify/me`, 
     {
       method: "GET",
       mode: "no-cors",
-      cache: "no-cache"
+      cache: "no-cache",
+      headers: {
+        'Session-Id': sessionId,
+      },
     })
 
     return {

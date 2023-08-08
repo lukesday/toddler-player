@@ -28,7 +28,6 @@ export async function load({ url, cookies }) {
       grant_type: 'authorization_code',
     }
 
-    // This should be moved to the Server!
     const response = await fetch(`${localServerUri}/api/spotify/auth`, 
     {
       method: "POST",
@@ -48,6 +47,8 @@ export async function load({ url, cookies }) {
     }
 
     const body = await response.json()
+
+    cookies.set("session_id", body.session_id)
 
     return {
       userData: body
