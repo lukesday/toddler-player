@@ -154,7 +154,10 @@ func getUserData(authData SpotifyAuthResponse, session *session.Session) (Spotif
 	var responseData SpotifyUserData
 	resource := "v1/me"
 
-	body, err := spotifyGetRequestWithRetry(authData, resource, session)
+	body, err, authData := spotifyGetRequestWithRetry(authData, resource)
+	if authData.AccessToken != "" {
+		session.Set("authData", authData)
+	}
 
 	json.Unmarshal(body, &responseData)
 
@@ -166,7 +169,10 @@ func getDevices(authData SpotifyAuthResponse, session *session.Session) (Spotify
 	var responseData SpotifyDeviceList
 	resource := "v1/me/player/devices"
 
-	body, err := spotifyGetRequestWithRetry(authData, resource, session)
+	body, err, authData := spotifyGetRequestWithRetry(authData, resource)
+	if authData.AccessToken != "" {
+		session.Set("authData", authData)
+	}
 
 	json.Unmarshal(body, &responseData)
 
@@ -195,15 +201,15 @@ func spotifyGetRequest(spotifyAccessToken string, resource string) ([]byte, erro
 	return body, nil
 }
 
-func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource string, session *session.Session) ([]byte, error) {
+func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource string) ([]byte, error, SpotifyAuthResponse) {
 	respData, err := spotifyGetRequest(authData.AccessToken, resource)
 
 	if err == nil {
-		return respData, err
+		return respData, err, SpotifyAuthResponse{}
 	}
 
 	if !errors.Is(err, InvalidToken) {
-		return respData, err
+		return respData, err, SpotifyAuthResponse{}
 	}
 
 	apiUrl := "https://accounts.spotify.com"
@@ -228,21 +234,19 @@ func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource string, s
 
 	resp, err := client.Do(request)
 	if err != nil {
-		return []byte{}, err
+		return []byte{}, err, SpotifyAuthResponse{}
 	}
 	if resp.StatusCode != 200 {
-		return []byte{}, AuthError
+		return []byte{}, AuthError, SpotifyAuthResponse{}
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(body, &authResponse)
 
-	session.Set("authData", authResponse)
-
 	retryData, err := spotifyGetRequest(authData.AccessToken, resource)
 
-	return retryData, err
+	return retryData, err, authResponse
 }
 
 var InvalidToken = errors.New("Invalid Token")
