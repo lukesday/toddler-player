@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
 type SpotifyAuthResponse struct {
@@ -52,11 +53,16 @@ type SpotifyAuthPayload struct {
 }
 
 func (r *Router) UseSpotify() {
-	//Replace this with user specific cookies and access tokens - Use a session
-	var spotifyAccessToken string
+	// Move to mySQL store so this can be distributred and not in memory
+	store := session.New()
 
 	r.App.Get("/api/spotify/devices", func(c *fiber.Ctx) error {
-		if devices, err := getDevices(spotifyAccessToken); err == nil {
+
+		sess, _ := store.Get(c)
+
+		authData := sess.Get("authData").(SpotifyAuthResponse)
+
+		if devices, err := getDevices(authData.AccessToken); err == nil {
 			return c.JSON(devices)
 		}
 
@@ -72,13 +78,19 @@ func (r *Router) UseSpotify() {
 			return err
 		}
 
+		var authData SpotifyAuthResponse
+
 		if token, err := getAccessToken(payload); err != nil {
 			return c.SendStatus(401)
 		} else {
-			spotifyAccessToken = token
+			authData = token
 		}
 
-		if userData, err := getUserData(spotifyAccessToken); err != nil {
+		sess, _ := store.Get(c)
+
+		sess.Set("authData", authData)
+
+		if userData, err := getUserData(authData.AccessToken); err != nil {
 			return err
 		} else {
 			return c.JSON(userData)
@@ -86,11 +98,13 @@ func (r *Router) UseSpotify() {
 	})
 }
 
-func getAccessToken(authData SpotifyAuthPayload) (string, error) {
+func getAccessToken(authData SpotifyAuthPayload) (SpotifyAuthResponse, error) {
 	apiUrl := "https://accounts.spotify.com"
 	resource := "/api/token"
 	clientId := os.Getenv("SPOTIFY_CLIENT_ID")
 	clientSecret := os.Getenv("SPOTIFY_CLIENT_SECRET")
+
+	var responseData SpotifyAuthResponse
 
 	data := url.Values{}
 	data.Set("grant_type", "authorization_code")
@@ -108,16 +122,14 @@ func getAccessToken(authData SpotifyAuthPayload) (string, error) {
 
 	resp, err := client.Do(request)
 	if err != nil {
-		return "", err
+		return responseData, err
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	var responseData SpotifyAuthResponse
-
 	json.Unmarshal(body, &responseData)
 
-	return responseData.AccessToken, nil
+	return responseData, nil
 }
 
 func getUserData(spotifyAccessToken string) (SpotifyUserData, error) {
