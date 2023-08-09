@@ -10,12 +10,15 @@ import (
 func (r *Router) UseSpotify() {
 	r.App.Get("/api/spotify/devices", func(c *fiber.Ctx) error {
 
-		authData, err := spotify.GetAuthData(r.Conn, c.Get("Session-Id"))
+		sessionId := c.Get("Session-Id")
+
+		authData, err := spotify.GetAuthData(r.Conn, sessionId)
 		if err != nil {
 			return c.SendStatus(401)
 		}
 
-		if devices, err := spotify.GetDevices(authData, c.Get("Session-Id"), r.Conn); err == nil {
+		if devices, err := spotify.GetDevices(authData, sessionId, r.Conn); err == nil {
+			devices.SessionId = sessionId
 			return c.JSON(devices)
 		}
 
@@ -24,15 +27,19 @@ func (r *Router) UseSpotify() {
 
 	r.App.Get("/api/spotify/me", func(c *fiber.Ctx) error {
 
-		authData, err := spotify.GetAuthData(r.Conn, c.Get("Session-Id"))
+		sessionId := c.Get("Session-Id")
+
+		log.Print(c.Get("Session-Id"))
+		authData, err := spotify.GetAuthData(r.Conn, sessionId)
 		if err != nil {
 			return c.SendStatus(401)
 		}
 
-		if userData, err := spotify.GetUserData(authData, c.Get("Session-Id"), r.Conn); err != nil {
+		if userData, err := spotify.GetUserData(authData, sessionId, r.Conn); err != nil {
 			log.Print(err)
 			return c.SendStatus(500)
 		} else {
+			userData.SessionId = sessionId
 			return c.JSON(userData)
 		}
 	})
