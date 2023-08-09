@@ -7,13 +7,15 @@ type Automation struct {
 	NfcTag   NfcTag `gorm:"foreignKey:NfcUID"`
 	DeviceId string
 	MediaId  string
+	UserId   User `gorm:"foreignKey:UserID"`
 }
 
-func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, deviceId, mediaId string) {
+func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, deviceId, mediaId string, user User) {
 	d.DB.Create(&Automation{
 		NfcTag:   nfcTag,
 		DeviceId: deviceId,
 		MediaId:  mediaId,
+		UserId:   user,
 	})
 }
 
@@ -25,6 +27,6 @@ func (d *DatabaseConnection) GetAutomationByNfcTag(nfcTag NfcTag, out *Automatio
 	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("nfc_tag = ?", nfcTag).First(&out).Error
 }
 
-func (d *DatabaseConnection) ListAutomations(out *[]Automation) error {
-	return d.DB.Model(&Automation{}).Preload("NfcTag").Find(&out).Error
+func (d *DatabaseConnection) ListAutomations(userId string, out *[]Automation) error {
+	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("user_id = ?", userId).Find(&out).Error
 }

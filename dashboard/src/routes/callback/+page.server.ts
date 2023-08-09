@@ -2,8 +2,6 @@
 import { redirect } from '@sveltejs/kit'
 import * as querystring from 'querystring'
 
-const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
-const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
 const redirect_uri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
 const localServerUri = import.meta.env.VITE_SERVER_URI
 

@@ -3,7 +3,6 @@ import { redirect } from '@sveltejs/kit'
 import * as querystring from 'querystring'
 
 var client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
-var client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
 var redirect_uri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
 
 var stateKey = 'spotify_auth_state';

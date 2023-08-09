@@ -17,7 +17,7 @@ func (d *DatabaseConnection) LogRequest(url, status string) {
 	})
 }
 
-func (d *DatabaseConnection) GetLogs() []RequestLog {
+func (d *DatabaseConnection) GetRequestLogs() []RequestLog {
 	matchingLogs := []RequestLog{}
 	d.DB.Find(&matchingLogs)
 

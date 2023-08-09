@@ -6,6 +6,6 @@ import (
 
 func (r *Router) UseDbLogs() {
 	r.App.Get("/api/logs", func(c *fiber.Ctx) error {
-		return c.JSON(r.Conn.GetLogs())
+		return c.JSON(r.Conn.GetRequestLogs())
 	})
 }
