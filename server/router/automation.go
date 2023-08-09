@@ -20,7 +20,7 @@ type AutomationPayload struct {
 func (r *Router) UseAutomation() {
 	r.App.Get("/api/automation", func(c *fiber.Ctx) error {
 		automations := []database.Automation{}
-		if err := r.Conn.ListAutomations(automations); err != nil {
+		if err := r.Conn.ListAutomations(&automations); err != nil {
 			return err
 		}
 		return c.JSON(automations)
@@ -33,7 +33,7 @@ func (r *Router) UseAutomation() {
 		}
 
 		automation := database.Automation{}
-		if err := r.Conn.GetAutomation(uint(id), automation); err != nil {
+		if err := r.Conn.GetAutomation(uint(id), &automation); err != nil {
 			if errors.Is(err, fiber.ErrNotFound) {
 				return c.SendStatus(404)
 			}
@@ -53,14 +53,14 @@ func (r *Router) UseAutomation() {
 
 		nfcTag := database.NfcTag{}
 
-		if err := r.Conn.GetTag(payload.NfcTagUid, nfcTag); err != nil {
+		if err := r.Conn.GetTag(payload.NfcTagUid, &nfcTag); err != nil {
 			log.Println("error = ", err)
 			return err
 		}
 
 		automation := database.Automation{}
 
-		if err := r.Conn.GetAutomationByNfcTag(nfcTag, automation); err == nil {
+		if err := r.Conn.GetAutomationByNfcTag(nfcTag, &automation); err == nil {
 			return c.SendStatus(409)
 		} else if errors.Is(err, gorm.ErrRecordNotFound) {
 			r.Conn.CreateAutomation(nfcTag, payload.DeviceId, payload.MediaId)

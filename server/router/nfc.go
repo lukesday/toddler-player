@@ -12,10 +12,10 @@ import (
 func (r *Router) UseNfc() {
 	r.App.Post("/api/nfc/:uid", func(c *fiber.Ctx) error {
 		nfcTag := database.NfcTag{}
-		if tagErr := r.Conn.GetTag(c.Params("uid"), nfcTag); tagErr == nil {
+		if tagErr := r.Conn.GetTag(c.Params("uid"), &nfcTag); tagErr == nil {
 			automation := database.Automation{}
 
-			if err := r.Conn.GetAutomationByNfcTag(nfcTag, automation); err != nil {
+			if err := r.Conn.GetAutomationByNfcTag(nfcTag, &automation); err != nil {
 				log.Println(err)
 			} else {
 				// Trigger automation

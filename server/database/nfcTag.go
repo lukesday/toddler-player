@@ -13,7 +13,7 @@ func (d *DatabaseConnection) Enroll(UID string) {
 	})
 }
 
-func (d *DatabaseConnection) GetTag(UID string, out NfcTag) error {
+func (d *DatabaseConnection) GetTag(UID string, out *NfcTag) error {
 	err := d.DB.Where("nfc_uid = ?", UID).First(&out).Error
 	return err
 }
