@@ -12,7 +12,6 @@ type SpotifyAuthResponse struct {
 }
 
 type SpotifyDevice struct {
-	*SessionDetails
 	Id               string
 	IsActive         bool `json:"is_active"`
 	IsPrivateSession bool `json:"is_private_session"`
@@ -23,7 +22,7 @@ type SpotifyDevice struct {
 }
 
 type SpotifyUserData struct {
-	*SessionDetails
+	SessionId   string `json:"session_id"`
 	Country     string `json:"country"`
 	DisplayName string `json:"display_name"`
 	Email       string `json:"email"`
@@ -34,12 +33,9 @@ type SpotifyUserData struct {
 	URI         string `json:"uri"`
 }
 
-type SessionDetails struct {
-	SessionId string `json:"session_id"`
-}
-
 type SpotifyDeviceList struct {
-	Devices []SpotifyDevice
+	SessionId string `json:"session_id"`
+	Devices   []SpotifyDevice
 }
 
 type SpotifyAuthPayload struct {

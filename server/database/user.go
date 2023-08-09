@@ -26,15 +26,15 @@ func (d *DatabaseConnection) CreateUser(token, refresh, spotifyId string) uuid.U
 	return id
 }
 
-func (d *DatabaseConnection) GetUser(id uuid.UUID, out User) error {
+func (d *DatabaseConnection) GetUser(id uuid.UUID, out *User) error {
 	return d.DB.Model(&User{}).Where("user_id = ?", id).First(&out).Error
 }
 
-func (d *DatabaseConnection) GetUserBySpotifyId(spotifyId string, out User) error {
+func (d *DatabaseConnection) GetUserBySpotifyId(spotifyId string, out *User) error {
 	return d.DB.Model(&User{}).Where("spotify_id = ?", spotifyId).First(&out).Error
 }
 
-func (d *DatabaseConnection) UpdateUser(id uuid.UUID, token, refresh string, out User) error {
+func (d *DatabaseConnection) UpdateUser(id uuid.UUID, token, refresh string, out *User) error {
 	if err := d.DB.Model(&User{}).Where("user_id = ?", id).First(&out).Error; err != nil {
 		return err
 	}

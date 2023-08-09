@@ -58,7 +58,7 @@ func (r *Router) UseSpotify() {
 		if userData, err := spotify.GetUserDataWithoutRetry(authData); err != nil {
 			return err
 		} else {
-			spotify.SaveAuthData(r.Conn, userId, userData.ID, authData)
+			userId, _ = spotify.SaveAuthData(r.Conn, userId, userData.ID, authData)
 			userData.SessionId = userId
 			return c.JSON(userData)
 		}
