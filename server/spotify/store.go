@@ -2,7 +2,6 @@ package spotify
 
 import (
 	"errors"
-	"log"
 	"toddler-player/server/database"
 )
 
@@ -25,8 +24,6 @@ func SaveAuthData(db *database.DatabaseConnection, id, spotifyId string, authDat
 	} else {
 		db.GetUser(id, &user)
 	}
-
-	log.Print(user)
 
 	if user.UserID != "" {
 		err := db.UpdateUser(user.UserID, authData.AccessToken, authData.RefreshToken, &user)

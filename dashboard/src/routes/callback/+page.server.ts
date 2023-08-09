@@ -50,8 +50,6 @@ export async function load({ url, cookies }) {
 
     cookies.set("session_id", body.session_id)
 
-    return {
-      userData: body
-    }
+    throw redirect(307, '/');
   }
 }

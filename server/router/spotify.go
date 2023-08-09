@@ -29,7 +29,6 @@ func (r *Router) UseSpotify() {
 
 		sessionId := c.Get("Session-Id")
 
-		log.Print(c.Get("Session-Id"))
 		authData, err := spotify.GetAuthData(r.Conn, sessionId)
 		if err != nil {
 			return c.SendStatus(401)
