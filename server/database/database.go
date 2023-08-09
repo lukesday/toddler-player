@@ -16,7 +16,13 @@ func InitialiseDatabase() DatabaseConnection {
 	}
 
 	// Migrate the schema
-	db.AutoMigrate(&NfcTag{}, &Status{}, &RequestLog{}, &Automation{})
+	db.AutoMigrate(
+		&NfcTag{},
+		&Status{},
+		&RequestLog{},
+		&Automation{},
+		&User{},
+	)
 
 	return DatabaseConnection{DB: db}
 }

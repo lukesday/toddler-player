@@ -51,10 +51,19 @@ func GetUserData(authData SpotifyAuthResponse, id string, db *database.DatabaseC
 	var responseData SpotifyUserData
 	resource := "v1/me"
 
-	body, err, authData := spotifyGetRequestWithRetry(authData, resource)
-	if authData.AccessToken != "" {
-		SaveAuthData(db, id, authData)
-	}
+	body, err := spotifyGetRequestWithRetry(authData, resource, id, db)
+
+	json.Unmarshal(body, &responseData)
+
+	return responseData, err
+}
+
+func GetUserDataWithoutRetry(authData SpotifyAuthResponse) (SpotifyUserData, error) {
+
+	var responseData SpotifyUserData
+	resource := "v1/me"
+
+	body, err := spotifyGetRequest(authData.AccessToken, resource)
 
 	json.Unmarshal(body, &responseData)
 
@@ -66,17 +75,14 @@ func GetDevices(authData SpotifyAuthResponse, id string, db *database.DatabaseCo
 	var responseData SpotifyDeviceList
 	resource := "v1/me/player/devices"
 
-	body, err, authData := spotifyGetRequestWithRetry(authData, resource)
-	if authData.AccessToken != "" {
-		SaveAuthData(db, id, authData)
-	}
+	body, err := spotifyGetRequestWithRetry(authData, resource, id, db)
 
 	json.Unmarshal(body, &responseData)
 
 	return responseData, err
 }
 
-func spotifyGetRequest(spotifyAccessToken string, resource string) ([]byte, error) {
+func spotifyGetRequest(spotifyAccessToken, resource string) ([]byte, error) {
 
 	apiUrl := "https://api.spotify.com"
 
@@ -98,15 +104,15 @@ func spotifyGetRequest(spotifyAccessToken string, resource string) ([]byte, erro
 	return body, nil
 }
 
-func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource string) ([]byte, error, SpotifyAuthResponse) {
+func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource, id string, db *database.DatabaseConnection) ([]byte, error) {
 	respData, err := spotifyGetRequest(authData.AccessToken, resource)
 
 	if err == nil {
-		return respData, err, SpotifyAuthResponse{}
+		return respData, err
 	}
 
 	if !errors.Is(err, InvalidToken) {
-		return respData, err, SpotifyAuthResponse{}
+		return respData, err
 	}
 
 	apiUrl := "https://accounts.spotify.com"
@@ -131,17 +137,19 @@ func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource string) (
 
 	resp, err := client.Do(request)
 	if err != nil {
-		return []byte{}, err, SpotifyAuthResponse{}
+		return []byte{}, err
 	}
 	if resp.StatusCode != 200 {
-		return []byte{}, AuthError, SpotifyAuthResponse{}
+		return []byte{}, AuthError
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(body, &authResponse)
 
+	SaveAuthData(db, id, "", authResponse)
+
 	retryData, err := spotifyGetRequest(authData.AccessToken, resource)
 
-	return retryData, err, authResponse
+	return retryData, err
 }

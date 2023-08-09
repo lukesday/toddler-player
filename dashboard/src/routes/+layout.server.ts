@@ -24,8 +24,18 @@ export async function load({ cookies }) {
       },
     })
 
+    if (response.status === 200) {
+      const body = await response.json()
+      cookies.set("session_id", body.session_id)
+
+      return {
+          loggedIn: true,
+          userData: body,
+      }
+    }
+    
     return {
-        loggedIn: response.status === 200,
-        userData: response.status === 200 ? await response.json() : null,
+        loggedIn: false,
+        userData: null,
     }
 }
