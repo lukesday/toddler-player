@@ -26,3 +26,14 @@ func (r *Router) UseMiddleware() {
 		return c.Next()
 	})
 }
+
+func GetCurrentUser(c *fiber.Ctx) database.User {
+	var user database.User
+	localUser := c.Locals("user")
+	if localUser == nil {
+		return user
+	}
+	user = localUser.(database.User)
+
+	return user
+}

@@ -19,11 +19,10 @@ type AutomationPayload struct {
 
 func (r *Router) UseAutomation() {
 	r.App.Get("/api/automation", func(c *fiber.Ctx) error {
-		localUser := c.Locals("user")
-		if localUser == nil {
+		user := GetCurrentUser(c)
+		if user.ID == 0 {
 			return c.SendStatus(400)
 		}
-		user := localUser.(database.User)
 
 		automations := []database.Automation{}
 		if err := r.Conn.ListAutomations(user.UserID, &automations); err != nil {
@@ -50,11 +49,10 @@ func (r *Router) UseAutomation() {
 	})
 
 	r.App.Post("/api/automation", func(c *fiber.Ctx) error {
-		localUser := c.Locals("user")
-		if localUser == nil {
+		user := GetCurrentUser(c)
+		if user.ID == 0 {
 			return c.SendStatus(400)
 		}
-		user := localUser.(database.User)
 
 		payload := AutomationPayload{}
 
