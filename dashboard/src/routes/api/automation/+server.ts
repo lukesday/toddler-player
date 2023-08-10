@@ -1,9 +1,9 @@
-import { error } from '@sveltejs/kit'
+import { error, json } from '@sveltejs/kit'
 import * as querystring from 'querystring'
 
 const localServerUri = import.meta.env.VITE_SERVER_URI
 
-export async function load({ cookies }) {
+export async function GET({ cookies }) {
 
     const sessionId = cookies.get("session_id")
 
@@ -27,7 +27,7 @@ export async function load({ cookies }) {
     
     const body = await response.json()
 
-    return {
+    return json({
         automations: body
-    }
+    })
 }

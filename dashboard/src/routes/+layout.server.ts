@@ -26,7 +26,7 @@ export async function load({ cookies }) {
 
     if (response.status === 200) {
       const body = await response.json()
-      cookies.set("session_id", body.session_id)
+      cookies.set("session_id", body.session_id, {path: '/'})
 
       return {
           loggedIn: true,

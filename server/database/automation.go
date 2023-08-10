@@ -4,10 +4,12 @@ import "gorm.io/gorm"
 
 type Automation struct {
 	gorm.Model
-	NfcTag   NfcTag `gorm:"foreignKey:NfcUID"`
+	NfcTagID int
+	NfcTag   NfcTag
 	DeviceId string
 	MediaId  string
-	UserId   User `gorm:"foreignKey:UserID"`
+	UserID   string
+	User     User `gorm:"references:UserID"`
 }
 
 func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, deviceId, mediaId string, user User) {
@@ -15,7 +17,7 @@ func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, deviceId, mediaId s
 		NfcTag:   nfcTag,
 		DeviceId: deviceId,
 		MediaId:  mediaId,
-		UserId:   user,
+		User:     user,
 	})
 }
 

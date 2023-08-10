@@ -46,7 +46,7 @@ export async function load({ url, cookies }) {
 
     const body = await response.json()
 
-    cookies.set("session_id", body.session_id)
+    cookies.set("session_id", body.session_id, {path: '/'})
 
     throw redirect(307, '/');
   }
