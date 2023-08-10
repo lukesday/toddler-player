@@ -10,11 +10,14 @@
         Row,
         Column,
     } from "carbon-components-svelte";
+    import { setContext } from 'svelte';
+
     export let data;
 
+    setContext('data', data)
+    
     let isSideNavOpen = false
 </script>
-
 
 <Header platformName="Toddler Player" bind:isSideNavOpen>
     <HeaderNav>
