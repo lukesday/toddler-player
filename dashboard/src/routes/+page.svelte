@@ -4,7 +4,6 @@
     import { getContext } from 'svelte';
 
     let layoutData = getContext('data')
-    console.log(layoutData)
 
     export let data;
 </script>
