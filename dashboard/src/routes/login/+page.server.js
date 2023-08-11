@@ -7,7 +7,7 @@ var redirect_uri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI
 
 var stateKey = 'spotify_auth_state';
 
-var generateRandomString = function(length : number) {
+var generateRandomString = function(length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
