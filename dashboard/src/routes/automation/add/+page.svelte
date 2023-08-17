@@ -1,8 +1,7 @@
 <script>
     import AddAutomation from "$lib/AddAutomation.svelte";
     
-    export let deviceList;
-    export let nfcList;
+    export let data;
 </script>
 
-<AddAutomation deviceList={deviceList} nfcList={nfcList} />
+<AddAutomation deviceList={data.deviceList} nfcList={data.nfcList} />

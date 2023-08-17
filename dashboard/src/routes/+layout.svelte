@@ -24,7 +24,7 @@
         {#if !data.loggedIn}
             <HeaderNavItem href="/login" text="Login" />
         {:else}
-            <HeaderNavItem href="/logout" text="Logout" />
+            <HeaderNavItem data-sveltekit-preload-data="off" href="/logout" text="Logout" />
         {/if}
     </HeaderNav>
   </Header>

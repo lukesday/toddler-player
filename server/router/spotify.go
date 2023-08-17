@@ -17,12 +17,14 @@ func (r *Router) UseSpotify() {
 			return c.SendStatus(401)
 		}
 
-		if devices, err := spotify.GetDevices(authData, sessionId, r.Conn); err == nil {
+		if devices, deviceErr := spotify.GetDevices(authData, sessionId, r.Conn); deviceErr == nil {
 			devices.SessionId = sessionId
 			return c.JSON(devices)
+		} else {
+			log.Print(deviceErr)
 		}
 
-		return c.SendStatus(401)
+		return c.SendStatus(500)
 	})
 
 	r.App.Get("/api/spotify/me", func(c *fiber.Ctx) error {

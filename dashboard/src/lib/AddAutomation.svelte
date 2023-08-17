@@ -8,14 +8,22 @@
     Select,
     SelectItem,
     Button,
+    TextInput
   } from "carbon-components-svelte";
 
   export let deviceList
   export let nfcList
 </script>
 
-<Form  method="POST" action="/api/automation">
-  <input name="track" id="track" type="text">
+<Form  method="POST" action="/">
+  <FormGroup>
+    <TextInput
+      id="track"
+      invalidText="A valid value is required"
+      labelText="Track"
+      placeholder="eg spotify:track:6rqhFgbbKwnb9MLmUQDhG6"
+    />
+  </FormGroup>
   <FormGroup>
     <Select id="nfc" name="nfc" labelText="NFC ID">
       <SelectItem
@@ -24,9 +32,8 @@
         value="placeholder-item"
         text="Choose an NFC ID"
       />
-      <SelectItem value="option-1" text="Option 1" />
       {#each nfcList as nfc}
-        <SelectItem value="{nfc.nfc_uid}" text="{nfc.nfc_uid}" />
+        <SelectItem value="{nfc.NfcUID}" text="{nfc.NfcUID}" />
       {/each}
     </Select>
   </FormGroup>

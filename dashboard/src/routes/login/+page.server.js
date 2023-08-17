@@ -22,7 +22,7 @@ export function load({ cookies }) {
     var state = generateRandomString(16);
     cookies.set(stateKey, state);
 
-    var scope = 'user-read-private user-read-email';
+    var scope = 'user-read-private user-read-email user-modify-playback-state user-read-playback-state';
 
     throw redirect (307, 'https://accounts.spotify.com/authorize?' +
     querystring.stringify({

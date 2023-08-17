@@ -14,14 +14,14 @@ const queryAPI = async (resource, sessionId) => {
     
     if (response.status !== 200) {
         return { 
-            error: response.error,
+            error: response.status,
             data: null
         }
     }
     
     return {
         error: null,
-        data: response.json()
+        data: await response.json()
     }
 }
 
