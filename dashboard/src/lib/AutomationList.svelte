@@ -1,6 +1,6 @@
 <script>
-    import { DataTable, Link } from "carbon-components-svelte";
-    import { TrashCan } from "carbon-icons-svelte";
+    import { DataTable, Link, Toolbar, ToolbarContent, Button } from "carbon-components-svelte";
+    import { TrashCan, Add } from "carbon-icons-svelte";
     export let automationList
 
     const handleDelete = async (uid) => {
@@ -23,6 +23,16 @@
     }))}
   title="Automations"
   description="All active automations">
+
+  <Toolbar>
+    <ToolbarContent>
+        <Button 
+        href="/automation/add"
+        icon={Add}>
+        New Automation
+        </Button>
+    </ToolbarContent>
+  </Toolbar>
   <svelte:fragment slot="cell" let:row let:cell>
     {#if cell.key === "Action" && cell.value === "Round robin"}
       <Link

@@ -10,12 +10,26 @@
 
   export let deviceList
   export let nfcList
+
+  const submitForm = async (e) => {
+    e.preventDefault()
+
+		const formData = new FormData(e.target)
+		const data = new URLSearchParams()
+		for (let field of formData) {
+			const [key, value] = field
+			data.append(key, value)
+		}
+
+    //post data
+  }
 </script>
 
-<Form  method="POST" action="/">
+<Form on:submit={submitForm}>
   <FormGroup>
     <TextInput
       id="track"
+      name="track"
       invalidText="A valid value is required"
       labelText="Track"
       placeholder="eg spotify:track:6rqhFgbbKwnb9MLmUQDhG6"
@@ -45,6 +59,7 @@
       {#each deviceList as device}
         <SelectItem value="{device.id}" text="{device.name}" />
       {/each}
+      <SelectItem value="test123" text="test123" />
     </Select>
   </FormGroup>
   <Button type="submit">Submit</Button>
