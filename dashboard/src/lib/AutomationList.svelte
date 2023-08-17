@@ -1,1 +1,36 @@
-<p>test</p>
+<script>
+    import { DataTable, Link } from "carbon-components-svelte";
+    import { TrashCan } from "carbon-icons-svelte";
+    export let automationList
+
+    const handleDelete = async (uid) => {
+        console.log("handleDelete", uid)
+    }
+</script>
+  
+<DataTable
+    headers={[
+        { key: "NfcUID", value: "NFC UID" },
+        { key: "DeviceId", value: "Device Id" },
+        { key: "MediaId", value: "Track" },
+        { key: "Action", value: "Actions"},
+    ]}
+    rows={automationList.map((automation) => ({
+        NfcUid: automation.NfcTag.NfcUid,
+        DeviceId: automation.DeviceId,
+        MediaId: automation.MediaId,
+        Action: automation.NfcTag.NfcUid
+    }))}
+  title="Automations"
+  description="All active automations">
+  <svelte:fragment slot="cell" let:row let:cell>
+    {#if cell.key === "Action" && cell.value === "Round robin"}
+      <Link
+        icon={TrashCan}
+        on:click={handleDelete(cell.value)}
+        target="_blank">Delete</Link>
+    {:else}
+      {cell.value}
+    {/if}
+  </svelte:fragment>
+  </DataTable>

@@ -18,7 +18,7 @@ type AutomationPayload struct {
 }
 
 func (r *Router) UseAutomation() {
-	r.App.Get("/api/automation", func(c *fiber.Ctx) error {
+	r.App.Get("/api/automations", func(c *fiber.Ctx) error {
 		user := GetCurrentUser(c)
 		if user.ID == 0 {
 			return c.SendStatus(400)
