@@ -25,8 +25,6 @@ export async function load({ cookies }) {
         }))
     }
 
-    console.log(nfcResponse, deviceResponse)
-
     return {
         nfcList: nfcResponse.data,
         deviceList: deviceResponse.data.Devices

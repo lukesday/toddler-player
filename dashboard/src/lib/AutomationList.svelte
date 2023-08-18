@@ -6,6 +6,7 @@
     const handleDelete = async (uid) => {
         console.log("handleDelete", uid)
     }
+    console.log(automationList)
 </script>
   
 <DataTable
@@ -16,10 +17,10 @@
         { key: "Action", value: "Actions"},
     ]}
     rows={automationList.map((automation) => ({
-        NfcUid: automation.NfcTag.NfcUid,
+        NfcUID: automation.NfcTag.NfcUID,
         DeviceId: automation.DeviceId,
         MediaId: automation.MediaId,
-        Action: automation.NfcTag.NfcUid
+        Action: automation.NfcTag.NfcUID,
     }))}
   title="Automations"
   description="All active automations">
@@ -34,7 +35,7 @@
     </ToolbarContent>
   </Toolbar>
   <svelte:fragment slot="cell" let:row let:cell>
-    {#if cell.key === "Action" && cell.value === "Round robin"}
+    {#if cell.key === "Action"}
       <Link
         icon={TrashCan}
         on:click={handleDelete(cell.value)}

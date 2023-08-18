@@ -7,6 +7,9 @@
     Button,
     TextInput
   } from "carbon-components-svelte";
+    import { ArrowRight } from "carbon-icons-svelte";
+  import { redirect } from '@sveltejs/kit';
+  import * as querystring from 'querystring';
 
   export let deviceList
   export let nfcList
@@ -15,13 +18,31 @@
     e.preventDefault()
 
 		const formData = new FormData(e.target)
-		const data = new URLSearchParams()
+		let data = {}
 		for (let field of formData) {
 			const [key, value] = field
-			data.append(key, value)
+			data[key] =  value
 		}
 
-    //post data
+    console.log(data)
+
+    const response = await fetch(`/automation/add/submit`, 
+    {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-cache",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    
+    if (response.status !== 200) {
+      // Show failure message
+    }
+    
+    // Show success message etc etc, redirect to home with table
+    console.log('automation add success')
   }
 </script>
 
@@ -49,18 +70,19 @@
     </Select>
   </FormGroup>
   <FormGroup>
-    <Select id="device" name="device" labelText="Device ID">
+    <Select id="device" name="device" labelText="Device">
       <SelectItem
         disabled
         hidden
         value="placeholder-item"
-        text="Choose a Device ID"
+        text="Choose a Device"
       />
       {#each deviceList as device}
-        <SelectItem value="{device.id}" text="{device.name}" />
+        <SelectItem value="{device.Id}" text="{device.Name}" />
       {/each}
       <SelectItem value="test123" text="test123" />
     </Select>
   </FormGroup>
-  <Button type="submit">Submit</Button>
+  <Button type="submit" icon={ArrowRight}>Submit</Button>
+  <Button kind='secondary' href="/">Back</Button>
 </Form>

@@ -26,7 +26,7 @@ func (d *DatabaseConnection) GetAutomation(id uint, out *Automation) error {
 }
 
 func (d *DatabaseConnection) GetAutomationByNfcTag(nfcTag NfcTag, out *Automation) error {
-	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("nfc_tag = ?", nfcTag).First(&out).Error
+	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("nfc_tag_ID = ?", nfcTag.ID).First(&out).Error
 }
 
 func (d *DatabaseConnection) ListAutomations(userId string, out *[]Automation) error {

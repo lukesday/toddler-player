@@ -12,7 +12,7 @@ import (
 func (r *Router) UseNfc() {
 	r.App.Get("/api/nfc/unused", func(c *fiber.Ctx) error {
 		nfcTags := []database.NfcTag{}
-		if err := r.Conn.GetUnused(&nfcTags); err != nil {
+		if err := r.Conn.GetUnusedTag(&nfcTags); err != nil {
 			return err
 		}
 

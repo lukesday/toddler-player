@@ -12,9 +12,9 @@ import (
 )
 
 type AutomationPayload struct {
-	NfcTagUid string `json:"nfcTagUid"`
-	DeviceId  string `json:"deviceId"`
-	MediaId   string `json:"mediaId"`
+	NfcTagUid string `json:"nfc"`
+	DeviceId  string `json:"device"`
+	MediaId   string `json:"track"`
 }
 
 func (r *Router) UseAutomation() {
@@ -60,6 +60,8 @@ func (r *Router) UseAutomation() {
 			log.Println("error = ", err)
 			return err
 		}
+
+		log.Print(payload)
 
 		nfcTag := database.NfcTag{}
 
