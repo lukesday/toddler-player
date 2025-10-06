@@ -1,6 +1,3 @@
-import { redirect } from '@sveltejs/kit'
-import * as querystring from 'querystring'
-
 const localServerUri = import.meta.env.VITE_SERVER_URI
 
 export async function load({ cookies }) {
