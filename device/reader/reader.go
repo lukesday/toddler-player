@@ -4,10 +4,10 @@ import (
 	"log"
 	"time"
 
+	"periph.io/x/conn/v3/gpio/gpioreg"
 	"periph.io/x/conn/v3/spi/spireg"
 	"periph.io/x/devices/v3/mfrc522"
 	"periph.io/x/host/v3"
-	"periph.io/x/host/v3/rpi"
 )
 
 type Reader struct {
@@ -36,7 +36,18 @@ func (r *Reader) Read() {
 	}
 	defer p.Close()
 
-	rfid, err := mfrc522.NewSPI(p, rpi.P1_13, rpi.P1_15)
+	// Access GPIO pins by their names or numbers
+	resetPin := gpioreg.ByName("25") // GPIO25 (was rpi.P1_22)
+	if resetPin == nil {
+		log.Fatal("Failed to find GPIO25")
+	}
+
+	irqPin := gpioreg.ByName("24") // GPIO24 (was rpi.P1_18)
+	if irqPin == nil {
+		log.Fatal("Failed to find GPIO24")
+	}
+
+	rfid, err := mfrc522.NewSPI(p, resetPin, irqPin)
 	if err != nil {
 		log.Fatal(err)
 	}
