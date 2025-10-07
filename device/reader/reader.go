@@ -36,7 +36,7 @@ func (r *Reader) Read() {
 	}
 	defer p.Close()
 
-	rfid, err := mfrc522.NewSPI(p, rpi.P1_13, rpi.P1_11)
+	rfid, err := mfrc522.NewSPI(p, rpi.P1_13, rpi.P1_15)
 	if err != nil {
 		log.Fatal(err)
 	}
