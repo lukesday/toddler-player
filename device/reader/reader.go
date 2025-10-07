@@ -42,12 +42,12 @@ func (r *Reader) Read() {
 		log.Fatal("Failed to find GPIO25")
 	}
 
-	irqPin := gpioreg.ByName("24") // GPIO24 (was rpi.P1_18)
-	if irqPin == nil {
-		log.Fatal("Failed to find GPIO24")
-	}
+	// irqPin := gpioreg.ByName("24") // GPIO24 (was rpi.P1_18)
+	// if irqPin == nil {
+	// 	log.Fatal("Failed to find GPIO24")
+	// }
 
-	rfid, err := mfrc522.NewSPI(p, resetPin, irqPin)
+	rfid, err := mfrc522.NewSPI(p, resetPin, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
