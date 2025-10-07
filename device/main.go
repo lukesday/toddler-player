@@ -7,10 +7,17 @@ import (
 	"os/signal"
 	"time"
 
+	"net/http"
 	"toddler-player/device/reader"
 )
 
 func main() {
+
+	const (
+		API_BASE_URL string = "http://192.168.1.109:3000"
+	)
+
+	client := &http.Client{}
 
 	cardReader := reader.NewReader()
 
@@ -28,6 +35,16 @@ func main() {
 			<-loopTimer.C
 			// Send healthy HTTP request to endpoint instead
 			log.Println("healthy")
+			req, _ := http.NewRequest(http.MethodPut, API_BASE_URL+"/api/device/sethealth", nil)
+			resp, err := client.Do(req)
+			if err != nil {
+				log.Println("Error sending healthy HTTP request:", err)
+			} else {
+				resp.Body.Close()
+				if resp.StatusCode != 200 {
+					log.Println("Error sending healthy HTTP request:", resp.StatusCode)
+				}
+			}
 			loopTimer = time.NewTimer(time.Second * 10)
 		}
 	}()
