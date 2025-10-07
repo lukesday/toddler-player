@@ -8,8 +8,6 @@
     TextInput
   } from "carbon-components-svelte";
     import { ArrowRight } from "carbon-icons-svelte";
-  import { redirect } from '@sveltejs/kit';
-  import * as querystring from 'querystring';
 
   export let deviceList
   export let nfcList

@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -39,7 +39,7 @@ func GetAccessToken(authData SpotifyAuthPayload) (SpotifyAuthResponse, error) {
 		return responseData, err
 	}
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 
 	json.Unmarshal(body, &responseData)
 
@@ -95,7 +95,7 @@ func spotifyGetRequest(spotifyAccessToken, resource string) ([]byte, error) {
 	request.Header.Add("Authorization", "Bearer "+spotifyAccessToken)
 	resp, _ := client.Do(request)
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode == 401 {
 		return []byte{}, InvalidToken
@@ -143,7 +143,7 @@ func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource, id strin
 		return []byte{}, AuthError
 	}
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 
 	json.Unmarshal(body, &authResponse)
 

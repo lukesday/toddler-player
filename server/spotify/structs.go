@@ -18,7 +18,8 @@ type SpotifyDevice struct {
 	IsRestricted     bool `json:"is_restricted"`
 	Name             string
 	Type             string
-	VolumePercent    int `json:"volume_percent"`
+	VolumePercent    int  `json:"volume_percent"`
+	SupportsVolume   bool `json:"supports_volume"`
 }
 
 type SpotifyUserData struct {

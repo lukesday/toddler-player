@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"toddler-player/server/database"
@@ -12,7 +13,9 @@ import (
 func main() {
 	//env := os.Getenv("ENV")
 	//if env == "dev" {
-	godotenv.Load()
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	//}
 
 	conn := database.InitialiseDatabase()
