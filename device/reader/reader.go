@@ -37,17 +37,17 @@ func (r *Reader) Read() {
 	defer p.Close()
 
 	// Access GPIO pins by their names or numbers
-	resetPin := gpioreg.ByName("25") // GPIO25 (was rpi.P1_22)
+	resetPin := gpioreg.ByName("24") // GPIO24 (was rpi.P1_18)
 	if resetPin == nil {
+		log.Fatal("Failed to find GPIO24")
+	}
+
+	irqPin := gpioreg.ByName("25") // GPIO25 (was rpi.P1_22)
+	if irqPin == nil {
 		log.Fatal("Failed to find GPIO25")
 	}
 
-	// irqPin := gpioreg.ByName("24") // GPIO24 (was rpi.P1_18)
-	// if irqPin == nil {
-	// 	log.Fatal("Failed to find GPIO24")
-	// }
-
-	rfid, err := mfrc522.NewSPI(p, resetPin, nil)
+	rfid, err := mfrc522.NewSPI(p, resetPin, irqPin)
 	if err != nil {
 		log.Fatal(err)
 	}
