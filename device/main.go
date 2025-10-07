@@ -52,8 +52,13 @@ func main() {
 	for {
 		select {
 		case data := <-cardReader.C:
-			log.Println("UID:", hex.EncodeToString(data))
+			var uid string = hex.EncodeToString(data)
+			log.Println("UID:", uid)
 			// Send HTTP request to server with UID
+			_, err := http.Post(API_BASE_URL+"/api/nfc/"+uid, "application/json", nil)
+			if err != nil {
+				log.Println("Error sending NFC request:", err)
+			}
 		case <-keySignal:
 			log.Println("SIGINT detected, closing toddler-player")
 			os.Exit(1)
