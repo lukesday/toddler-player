@@ -25,12 +25,10 @@ func main() {
 		loopTimer := time.NewTimer(0)
 
 		for {
-			select {
-			case <-loopTimer.C:
-				// Send healthy HTTP request to endpoint instead
-				log.Println("healthy")
-				loopTimer = time.NewTimer(time.Second * 10)
-			}
+			<-loopTimer.C
+			// Send healthy HTTP request to endpoint instead
+			log.Println("healthy")
+			loopTimer = time.NewTimer(time.Second * 10)
 		}
 	}()
 
