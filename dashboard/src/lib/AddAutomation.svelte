@@ -47,6 +47,15 @@
 <Form on:submit={submitForm}>
   <FormGroup>
     <TextInput
+      id="name"
+      name="name"
+      invalidText="A valid name is required"
+      labelText="Name"
+      placeholder="eg My Automation"
+    />
+  </FormGroup>
+  <FormGroup>
+    <TextInput
       id="track"
       name="track"
       invalidText="A valid value is required"

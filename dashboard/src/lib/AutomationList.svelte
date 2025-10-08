@@ -11,12 +11,14 @@
   
 <DataTable
     headers={[
+        { key: "Name", value: "Name" },
         { key: "NfcUID", value: "NFC UID" },
         { key: "DeviceId", value: "Device Id" },
         { key: "MediaId", value: "Track" },
         { key: "Action", value: "Actions"},
     ]}
     rows={automationList.map((automation) => ({
+        Name: automation.Name,
         NfcUID: automation.NfcTag.NfcUID,
         DeviceId: automation.DeviceId,
         MediaId: automation.MediaId,
