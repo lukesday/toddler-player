@@ -1,5 +1,5 @@
 <script>
-    import { DataTable, Link, Toolbar, ToolbarContent, Button } from "carbon-components-svelte";
+    import { DataTable, Toolbar, ToolbarContent, Button } from "carbon-components-svelte";
     import { TrashCan, Add } from "carbon-icons-svelte";
     export let automationList
 
@@ -24,6 +24,7 @@
       
       // Show success message, remove from list
       console.log('automation delete success', id)
+      automationList = automationList.filter((automation) => automation.ID !== id)
     }
 </script>
   
@@ -54,10 +55,11 @@
   </Toolbar>
   <svelte:fragment slot="cell" let:row let:cell>
     {#if cell.key === "Action"}
-      <Link
+      <Button
         icon={TrashCan}
+        kind="ghost"
         on:click={handleDelete(cell.value)}
-        target="_blank">Delete</Link>
+        >Delete</Button>
     {:else}
       {cell.value}
     {/if}
