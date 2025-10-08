@@ -15,10 +15,9 @@ export async function load({ cookies }) {
     }
 
     const nfcResponse = await queryAPI('/api/nfc/unused', sessionId)
-    const deviceResponse = await queryAPI('/api/spotify/devices', sessionId)
 
-    if (nfcResponse.error !== null || deviceResponse.error !== null) {
-        console.log(nfcResponse.error, deviceResponse.error)
+    if (nfcResponse.error !== null) {
+        console.log(nfcResponse.error)
         throw redirect(307, '/?' +
         querystring.stringify({
             error: 'system_failure'
@@ -27,7 +26,6 @@ export async function load({ cookies }) {
 
     return {
         nfcList: nfcResponse.data,
-        deviceList: deviceResponse.data.Devices
     }
 }
 

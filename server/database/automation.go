@@ -6,20 +6,18 @@ type Automation struct {
 	gorm.Model
 	NfcTagID int
 	NfcTag   NfcTag
-	DeviceId string
 	MediaId  string
 	Name     string
 	UserID   string
 	User     User `gorm:"references:UserID"`
 }
 
-func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, deviceId, mediaId, name string, user User) {
+func (d *DatabaseConnection) CreateAutomation(nfcTag NfcTag, mediaId, name string, user User) {
 	d.DB.Create(&Automation{
-		NfcTag:   nfcTag,
-		DeviceId: deviceId,
-		MediaId:  mediaId,
-		Name:     name,
-		User:     user,
+		NfcTag:  nfcTag,
+		MediaId: mediaId,
+		Name:    name,
+		User:    user,
 	})
 }
 

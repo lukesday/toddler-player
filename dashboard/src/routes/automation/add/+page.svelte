@@ -4,4 +4,4 @@
     export let data;
 </script>
 
-<AddAutomation deviceList={data.deviceList} nfcList={data.nfcList} />
+<AddAutomation nfcList={data.nfcList} />

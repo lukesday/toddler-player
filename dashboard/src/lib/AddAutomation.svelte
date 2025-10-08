@@ -9,7 +9,6 @@
   } from "carbon-components-svelte";
     import { ArrowRight } from "carbon-icons-svelte";
 
-  export let deviceList
   export let nfcList
 
   const submitForm = async (e) => {
@@ -60,7 +59,7 @@
       name="track"
       invalidText="A valid value is required"
       labelText="Track"
-      placeholder="eg spotify:track:6rqhFgbbKwnb9MLmUQDhG6"
+      placeholder="eg 6rqhFgbbKwnb9MLmUQDhG6"
     />
   </FormGroup>
   <FormGroup>
@@ -74,20 +73,6 @@
       {#each nfcList as nfc}
         <SelectItem value="{nfc.NfcUID}" text="{nfc.NfcUID}" />
       {/each}
-    </Select>
-  </FormGroup>
-  <FormGroup>
-    <Select id="device" name="device" labelText="Device">
-      <SelectItem
-        disabled
-        hidden
-        value="placeholder-item"
-        text="Choose a Device"
-      />
-      {#each deviceList as device}
-        <SelectItem value="{device.Id}" text="{device.Name}" />
-      {/each}
-      <SelectItem value="test123" text="test123" />
     </Select>
   </FormGroup>
   <Button type="submit" icon={ArrowRight}>Submit</Button>

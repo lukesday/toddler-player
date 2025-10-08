@@ -13,7 +13,6 @@ import (
 
 type AutomationPayload struct {
 	NfcTagUid string `json:"nfc"`
-	DeviceId  string `json:"device"`
 	MediaId   string `json:"track"`
 	Name      string `json:"name"`
 }
@@ -76,7 +75,7 @@ func (r *Router) UseAutomation() {
 		if err := r.Conn.GetAutomationByNfcTag(nfcTag, &automation); err == nil {
 			return c.SendStatus(409)
 		} else if errors.Is(err, gorm.ErrRecordNotFound) {
-			r.Conn.CreateAutomation(nfcTag, payload.DeviceId, payload.MediaId, payload.Name, user)
+			r.Conn.CreateAutomation(nfcTag, payload.MediaId, payload.Name, user)
 			return c.SendStatus(200)
 		}
 
