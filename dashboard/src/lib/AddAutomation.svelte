@@ -8,6 +8,7 @@
     TextInput
   } from "carbon-components-svelte";
     import { ArrowRight } from "carbon-icons-svelte";
+    import { goto } from "$app/navigation";
 
   export let nfcList
 
@@ -36,10 +37,13 @@
     
     if (response.status !== 200) {
       // Show failure message
+      console.log('automation add failure')
+      return
     }
     
     // Show success message etc etc, redirect to home with table
     console.log('automation add success')
+    goto('/')
   }
 </script>
 
