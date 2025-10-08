@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	"toddler-player/server/database"
 )
@@ -21,6 +22,8 @@ func NewRouter(conn *database.DatabaseConnection) *Router {
 
 func InitialiseRouter(conn *database.DatabaseConnection) {
 	router := NewRouter(conn)
+
+	router.App.Use(cors.New())
 
 	router.UseMiddleware()
 	router.UseDbLogs()

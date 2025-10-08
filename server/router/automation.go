@@ -48,6 +48,36 @@ func (r *Router) UseAutomation() {
 		return c.JSON(automation)
 	})
 
+	r.App.Delete("/api/automation/:id", func(c *fiber.Ctx) error {
+		id, err := strconv.ParseUint(c.Params("id"), 10, 64)
+		if err != nil {
+			return c.SendStatus(400)
+		}
+
+		user := GetCurrentUser(c)
+		if user.ID == 0 {
+			return c.SendStatus(400)
+		}
+
+		automation := database.Automation{}
+		if err := r.Conn.GetAutomation(uint(id), &automation); err != nil {
+			if errors.Is(err, fiber.ErrNotFound) {
+				return c.SendStatus(404)
+			}
+			return c.SendStatus(500)
+		}
+
+		if user.UserID != automation.UserID {
+			return c.SendStatus(401)
+		}
+
+		if err := r.Conn.DeleteAutomation(uint(id)); err != nil {
+			return c.SendStatus(500)
+		}
+
+		return c.SendStatus(200)
+	})
+
 	r.App.Post("/api/automation", func(c *fiber.Ctx) error {
 		user := GetCurrentUser(c)
 		if user.ID == 0 {

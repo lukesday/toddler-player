@@ -32,3 +32,7 @@ func (d *DatabaseConnection) GetAutomationByNfcTag(nfcTag NfcTag, out *Automatio
 func (d *DatabaseConnection) ListAutomations(userId string, out *[]Automation) error {
 	return d.DB.Model(&Automation{}).Preload("NfcTag").Where("user_id = ?", userId).Find(&out).Error
 }
+
+func (d *DatabaseConnection) DeleteAutomation(id uint) error {
+	return d.DB.Delete(&Automation{}, id).Error
+}

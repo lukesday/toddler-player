@@ -3,8 +3,27 @@
     import { TrashCan, Add } from "carbon-icons-svelte";
     export let automationList
 
-    const handleDelete = async (uid) => {
-        console.log("handleDelete", uid)
+    const handleDelete = async (id) => {
+
+      const response = await fetch(`/automation/delete`, 
+      {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id })
+      })
+      
+      if (response.status !== 200) {
+        // Show failure message
+        console.log('automation delete failure', id)
+        return
+      }
+      
+      // Show success message, remove from list
+      console.log('automation delete success', id)
     }
 </script>
   
@@ -19,7 +38,7 @@
         Name: automation.Name,
         NfcUID: automation.NfcTag.NfcUID,
         MediaId: automation.MediaId,
-        Action: automation.NfcTag.NfcUID,
+        Action: automation.ID,
     }))}
   title="Automations"
   description="All active automations">
