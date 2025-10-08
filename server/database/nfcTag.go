@@ -19,6 +19,6 @@ func (d *DatabaseConnection) GetTag(UID string, out *NfcTag) error {
 }
 
 func (d *DatabaseConnection) GetUnusedTag(out *[]NfcTag) error {
-	err := d.DB.Model(&NfcTag{}).Select("nfc_tags.id, nfc_tags.nfc_uid, automations.id as automations_id").Joins("left join automations on automations.nfc_tag_id = nfc_tags.id").Where("automations.id IS NULL").Scan(&out).Error
+	err := d.DB.Model(&NfcTag{}).Select("DISTINCT nfc_tags.id, nfc_tags.nfc_uid").Joins("left join automations on automations.nfc_tag_id = nfc_tags.id AND automations.deleted_at IS NULL").Where("automations.id IS NULL").Scan(&out).Error
 	return err
 }
