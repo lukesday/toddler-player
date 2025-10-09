@@ -9,6 +9,7 @@
   } from "carbon-components-svelte";
     import { ArrowRight } from "carbon-icons-svelte";
     import { goto } from "$app/navigation";
+    import { showSuccess } from "$lib/toast.js";
 
   export let nfcList
 
@@ -76,6 +77,7 @@
     
     // Show success message etc etc, redirect to home with table
     console.log('automation add success')
+    showSuccess('Success!', "Automation", `"${data.name}" added successfully`)
     goto('/')
   }
 </script>

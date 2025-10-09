@@ -1,6 +1,8 @@
 <script>
     import { DataTable, Toolbar, ToolbarContent, Button } from "carbon-components-svelte";
     import { TrashCan, Add } from "carbon-icons-svelte";
+    import { showDeleteSuccess } from "$lib/toast.js";
+
     export let automationList
 
     const handleDelete = async (id) => {
@@ -24,6 +26,7 @@
       
       // Show success message, remove from list
       console.log('automation delete success', id)
+      showDeleteSuccess('Automation', `"${automationList.find((automation) => automation.ID === id).Name}" deleted successfully`)
       automationList = automationList.filter((automation) => automation.ID !== id)
     }
 </script>
