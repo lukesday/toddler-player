@@ -2,6 +2,7 @@ package router
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -110,5 +111,35 @@ func (r *Router) UseAutomation() {
 		}
 
 		return c.SendStatus(400)
+	})
+
+	r.App.Post("/api/automation/trigger/:id", func(c *fiber.Ctx) error {
+		id, err := strconv.ParseUint(c.Params("id"), 10, 64)
+		if err != nil {
+			return c.SendStatus(400)
+		}
+
+		user := GetCurrentUser(c)
+		if user.ID == 0 {
+			return c.SendStatus(400)
+		}
+
+		automation := database.Automation{}
+		if err := r.Conn.GetAutomation(uint(id), &automation); err != nil {
+			if errors.Is(err, fiber.ErrNotFound) {
+				return c.SendStatus(404)
+			}
+			return c.SendStatus(500)
+		}
+
+		if user.UserID != automation.UserID {
+			return c.SendStatus(401)
+		}
+
+		fmt.Println("triggering automation", automation)
+
+		//spotify.PlayTrack(automation.MediaId, user)
+
+		return c.SendStatus(200)
 	})
 }

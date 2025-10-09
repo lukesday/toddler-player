@@ -1,7 +1,7 @@
 <script>
     import { DataTable, Toolbar, ToolbarContent, Button } from "carbon-components-svelte";
-    import { TrashCan, Add } from "carbon-icons-svelte";
-    import { showDeleteSuccess } from "$lib/toast.js";
+    import { TrashCan, Add, Play } from "carbon-icons-svelte";
+    import { showDeleteSuccess, showSuccess } from "$lib/toast.js";
 
     export let automationList
 
@@ -28,6 +28,26 @@
       console.log('automation delete success', id)
       showDeleteSuccess('Automation', `"${automationList.find((automation) => automation.ID === id).Name}" deleted successfully`)
       automationList = automationList.filter((automation) => automation.ID !== id)
+    }
+
+    const handleTrigger = async (id) => {
+      const response = await fetch(`/automation/trigger`, {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: id })
+      })
+
+      if (response.status !== 200) {
+        console.log('automation trigger failure', id, response.status)
+        return
+      }
+      
+      console.log('automation trigger success', id)
+      showSuccess('Automation', "Automation", `"${automationList.find((automation) => automation.ID === id).Name}" triggered successfully`)
     }
 </script>
   
@@ -60,9 +80,16 @@
     {#if cell.key === "Action"}
       <Button
         icon={TrashCan}
-        kind="ghost"
+        kind="danger-ghost"
         on:click={handleDelete(cell.value)}
-        >Delete</Button>
+        iconDescription="Delete"
+      />
+      <Button
+        icon={Play}
+        kind="ghost"
+        on:click={handleTrigger(cell.value)}
+        iconDescription="Trigger"
+      />
     {:else}
       {cell.value}
     {/if}
