@@ -44,5 +44,5 @@ type SpotifyAuthPayload struct {
 	Redirect string `json:"redirect"`
 }
 
-var InvalidToken = errors.New("Invalid Token")
-var AuthError = errors.New("Reauthentication Required")
+var ErrInvalidToken = errors.New("Invalid Token")
+var ErrAuth = errors.New("Reauthentication Required")

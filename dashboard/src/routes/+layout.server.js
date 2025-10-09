@@ -30,6 +30,10 @@ export async function load({ cookies }) {
           userData: body,
       }
     }
+    else {
+      cookies.set("session_id", "", {path: '/'})
+    }
+
     
     return {
         loggedIn: false,

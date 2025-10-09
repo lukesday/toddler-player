@@ -98,7 +98,7 @@ func spotifyGetRequest(spotifyAccessToken, resource string) ([]byte, error) {
 	body, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode == 401 {
-		return []byte{}, InvalidToken
+		return []byte{}, ErrInvalidToken
 	}
 
 	return body, nil
@@ -111,7 +111,7 @@ func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource, id strin
 		return respData, err
 	}
 
-	if !errors.Is(err, InvalidToken) {
+	if !errors.Is(err, ErrInvalidToken) {
 		return respData, err
 	}
 
@@ -140,7 +140,7 @@ func spotifyGetRequestWithRetry(authData SpotifyAuthResponse, resource, id strin
 		return []byte{}, err
 	}
 	if resp.StatusCode != 200 {
-		return []byte{}, AuthError
+		return []byte{}, ErrAuth
 	}
 
 	body, _ := io.ReadAll(resp.Body)
