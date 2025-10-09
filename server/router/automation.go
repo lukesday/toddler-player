@@ -2,7 +2,6 @@ package router
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 
@@ -10,6 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	"toddler-player/server/database"
+	"toddler-player/server/spotify"
 )
 
 type AutomationPayload struct {
@@ -136,9 +136,17 @@ func (r *Router) UseAutomation() {
 			return c.SendStatus(401)
 		}
 
-		fmt.Println("triggering automation", automation)
+		sessionId := c.Get("Session-Id")
 
-		//spotify.PlayTrack(automation.MediaId, user)
+		authData, err := spotify.GetAuthData(r.Conn, sessionId)
+		if err != nil {
+			return c.SendStatus(401)
+		}
+
+		err = spotify.StartPlayback(authData, sessionId, r.Conn, automation.MediaId)
+		if err != nil {
+			return c.SendStatus(500)
+		}
 
 		return c.SendStatus(200)
 	})
