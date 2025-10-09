@@ -11,6 +11,7 @@
         Column,
     } from "carbon-components-svelte";
     import { setContext } from 'svelte';
+    import Toast from '../lib/Toast.svelte';
 
     export let data;
 
@@ -47,3 +48,6 @@
       </Row>
     </Grid>
   </Content>
+
+  <!-- Toast notifications -->
+  <Toast />
