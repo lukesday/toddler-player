@@ -1,12 +1,13 @@
 package router
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 
 	"toddler-player/server/database"
+	"toddler-player/server/spotify"
 )
 
 func (r *Router) UseNfc() {
@@ -21,15 +22,26 @@ func (r *Router) UseNfc() {
 
 	r.App.Post("/api/nfc/:uid", func(c *fiber.Ctx) error {
 		nfcTag := database.NfcTag{}
-		// This can likely be refactored into a single query join
 		if tagErr := r.Conn.GetTag(c.Params("uid"), &nfcTag); tagErr == nil {
 			automation := database.Automation{}
 
 			if err := r.Conn.GetAutomationByNfcTag(nfcTag, &automation); err != nil {
-				log.Println(err)
 			} else {
+				userId := automation.UserID
+
+				fmt.Println("userId", userId)
+
+				authData, err := spotify.GetAuthData(r.Conn, userId)
+				if err != nil {
+					fmt.Println("error getting auth data", err)
+					return c.SendStatus(401)
+				}
 				// Trigger automation
-				log.Println(automation)
+				err = spotify.StartPlayback(authData, userId, r.Conn, automation.MediaId)
+				if err != nil {
+					fmt.Println("error starting playback", err)
+					return c.SendStatus(500)
+				}
 			}
 		} else if tagErr == gorm.ErrRecordNotFound {
 			r.Conn.Enroll(c.Params("uid"))
